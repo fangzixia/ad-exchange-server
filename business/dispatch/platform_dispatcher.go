@@ -1,0 +1,92 @@
+package dispatch
+
+import (
+	_interface "ad-exchange-server/core/interface"
+	"ad-exchange-server/core/model"
+	"ad-exchange-server/infra/httpclient"
+	"context"
+	"log"
+	"sync"
+	"time"
+)
+
+// PlatformDispatcher 平台方分发器
+type PlatformDispatcher struct {
+	httpClient *httpclient.HTTPClient
+	timeout    time.Duration
+}
+
+// NewPlatformDispatcher 创建平台方分发器实例
+func NewPlatformDispatcher() *PlatformDispatcher {
+	return &PlatformDispatcher{
+		httpClient: httpclient.NewHTTPClient(),
+		timeout:    3 * time.Second, // 3秒超时
+	}
+}
+
+// Dispatch 并发分发请求给所有平台方
+func (d *PlatformDispatcher) Dispatch(internalReq *model.AdInternalRequest, adapters []_interface.PlatformAdapter) []*model.AdInternalResponse {
+	var (
+		wg          sync.WaitGroup
+		respChan    = make(chan *model.AdInternalResponse, len(adapters))
+		ctx, cancel = context.WithTimeout(context.Background(), d.timeout)
+	)
+	defer cancel()
+	defer close(respChan)
+
+	// 并发请求每个平台方
+	for _, adapter := range adapters {
+		wg.Add(1)
+		go func(adapter _interface.PlatformAdapter) {
+			defer wg.Done()
+			// 1. 内部请求 -> 平台方协议请求
+			reqBytes, err := adapter.MarshalRequest(internalReq)
+			if err != nil {
+				log.Printf("平台方[%s]请求序列化失败: %v", adapter.GetPlatformName(), err)
+				return
+			}
+
+			// 2. 发送HTTP请求
+			respBytes, err := d.httpClient.Post(ctx, adapter.GetPlatformURL(), "application/json", reqBytes)
+			if err != nil {
+				log.Printf("平台方[%s]HTTP请求失败: %v", adapter.GetPlatformName(), err)
+				return
+			}
+
+			// 3. 平台方响应 -> 内部统一响应
+			internalResp, err := adapter.UnmarshalResponse(respBytes)
+			if err != nil {
+				log.Printf("平台方[%s]响应反序列化失败: %v", adapter.GetPlatformName(), err)
+				return
+			}
+
+			if internalResp.IsSuccess {
+				respChan <- internalResp
+			}
+		}(adapter)
+	}
+
+	// 等待所有goroutine结束
+	go func() {
+		wg.Wait()
+	}()
+
+	// 收集响应
+	var platformResponses []*model.AdInternalResponse
+	select {
+	case <-ctx.Done():
+		log.Printf("平台方分发超时")
+	case <-time.After(d.timeout + 100*time.Millisecond):
+		// 等待所有响应收集
+	}
+
+	// 读取通道中所有响应
+	for {
+		select {
+		case resp := <-respChan:
+			platformResponses = append(platformResponses, resp)
+		default:
+			return platformResponses
+		}
+	}
+}
