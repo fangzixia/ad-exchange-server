@@ -17,28 +17,20 @@ func NewPricePriorityStrategy() AdSelectionStrategy {
 }
 
 // Select 筛选出价最高的广告
-func (p *PricePriorityStrategy) Select(platformResponses []*model.AdInternalResponse) *model.AdInternalResponse {
+func (p *PricePriorityStrategy) Select(platformContent *model.AdPlatformContent) {
+	platformResponses := platformContent.AdInternalResponses
 	if len(platformResponses) == 0 {
-		return &model.AdInternalResponse{IsSuccess: false}
+		return
 	}
 
 	// 找出价格最高的响应
-	maxPriceResp := platformResponses[0]
-	for _, resp := range platformResponses {
-		if resp.Price > maxPriceResp.Price {
-			maxPriceResp = resp
-		}
-	}
-
-	// 转换为内部统一响应
-	return &model.AdInternalResponse{
-		AdID:        maxPriceResp.AdID,
-		AdTitle:     maxPriceResp.AdTitle,
-		AdContent:   maxPriceResp.AdContent,
-		RedirectURL: "http://localhost:8080/redirect/" + maxPriceResp.AdID,
-		Price:       maxPriceResp.Price,
-		IsSuccess:   true,
-	}
+	//maxPriceResp := platformResponses[0]
+	//for _, resp := range platformResponses {
+	//	if resp.Price > maxPriceResp.Price {
+	//		maxPriceResp = resp
+	//	}
+	//}
+	//platformContent.FinalAdInternalResponses = maxPriceResp
 }
 
 // GetStrategyName 获取策略名称

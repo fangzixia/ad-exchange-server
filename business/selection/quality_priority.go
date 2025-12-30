@@ -17,28 +17,15 @@ func NewQualityPriorityStrategy() AdSelectionStrategy {
 }
 
 // Select 筛选质量分最高的广告
-func (q *QualityPriorityStrategy) Select(platformResponses []*model.AdInternalResponse) *model.AdInternalResponse {
+func (q *QualityPriorityStrategy) Select(platformContent *model.AdPlatformContent) {
+	platformResponses := platformContent.AdInternalResponses
 	if len(platformResponses) == 0 {
-		return &model.AdInternalResponse{IsSuccess: false}
+		return
 	}
-
 	// 找出质量分最高的响应
-	maxQualityResp := platformResponses[0]
-	//for _, resp := range platformResponses {
-	//	if resp.QualityScore > maxQualityResp.QualityScore {
-	//		maxQualityResp = resp
-	//	}
-	//}
+	//maxQualityResp := platformResponses[0]
+	//platformContent.FinalAdInternalResponses = maxQualityResp
 
-	// 转换为内部统一响应
-	return &model.AdInternalResponse{
-		AdID:        maxQualityResp.AdID,
-		AdTitle:     maxQualityResp.AdTitle,
-		AdContent:   maxQualityResp.AdContent,
-		RedirectURL: "http://localhost:8080/redirect/" + maxQualityResp.AdID,
-		Price:       maxQualityResp.Price,
-		IsSuccess:   true,
-	}
 }
 
 // GetStrategyName 获取策略名称

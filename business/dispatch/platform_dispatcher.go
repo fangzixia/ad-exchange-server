@@ -25,7 +25,7 @@ func NewPlatformDispatcher() *PlatformDispatcher {
 }
 
 // Dispatch 并发分发请求给所有平台方
-func (d *PlatformDispatcher) Dispatch(internalReq *model.AdInternalRequest, adapters []_interface.PlatformAdapter) []*model.AdInternalResponse {
+func (d *PlatformDispatcher) Dispatch(c *model.AdPlatformContent, adapters []_interface.PlatformAdapter) []*model.AdInternalResponse {
 	var (
 		wg          sync.WaitGroup
 		respChan    = make(chan *model.AdInternalResponse, len(adapters))
@@ -40,7 +40,7 @@ func (d *PlatformDispatcher) Dispatch(internalReq *model.AdInternalRequest, adap
 		go func(adapter _interface.PlatformAdapter) {
 			defer wg.Done()
 			// 1. 内部请求 -> 平台方协议请求
-			reqBytes, err := adapter.MarshalRequest(internalReq)
+			reqBytes, err := adapter.MarshalRequest(c.AdInternalRequest)
 			if err != nil {
 				log.Printf("平台方[%s]请求序列化失败: %v", adapter.GetPlatformName(), err)
 				return

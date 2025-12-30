@@ -6,16 +6,13 @@ import (
 	_interface "ad-exchange-server/core/interface"
 )
 
-// CreateMediaAdapter 根据媒体类型创建对应的媒体适配器
-func CreateMediaAdapter(mediaType string) _interface.MediaAdapter {
-	switch mediaType {
-	case "media_a":
-		return media.NewMediaAAdapter()
-	case "media_b":
-		return media.NewMediaBAdapter()
-	case "adlink":
-		return adlink.NewAdapter()
-	default:
-		return nil
-	}
+var mediaAdapterMap = map[string]_interface.MediaAdapter{
+	"adlink":  adlink.NewAdapter(),
+	"media_a": media.NewMediaAAdapter(),
+	"media_b": media.NewMediaBAdapter(),
+}
+
+// SelectMediaAdapter 根据媒体类型创建对应的媒体适配器
+func SelectMediaAdapter(mediaType string) _interface.MediaAdapter {
+	return mediaAdapterMap[mediaType]
 }
