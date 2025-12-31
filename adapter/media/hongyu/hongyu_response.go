@@ -1,7 +1,5 @@
-package adlink
+package hongyu
 
-// AdResponse ADLink广告响应传输对象
-// 对应《AD-Link星联移动ADX广告平台对接文档v1.6.0.pdf》
 type AdResponse struct {
 	// responseid，必须和requestid保持一致
 	ID string `json:"id"`

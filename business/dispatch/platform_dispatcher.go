@@ -60,7 +60,7 @@ func (d *PlatformDispatcher) Dispatch(c *model.AdPlatformContent, adapters []_in
 				return
 			}
 
-			if internalResp.IsSuccess {
+			if internalResp.AdInfos != nil && len(internalResp.AdInfos) > 0 {
 				respChan <- internalResp
 			}
 		}(adapter)

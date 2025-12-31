@@ -41,12 +41,7 @@ func NewPlatformXAdapter() *PlatformXAdapter {
 
 // MarshalRequest 内部平台方请求 -> PlatformX请求
 func (b *PlatformXAdapter) MarshalRequest(internalReq *model.AdInternalRequest) ([]byte, error) {
-	platformXReq := PlatformXRequest{
-		Device_UUID: internalReq.DeviceID,
-		Device_Type: internalReq.DeviceType,
-		User_ID:     internalReq.UserID,
-		Ad_Space_ID: internalReq.AdSpaceID,
-	}
+	platformXReq := PlatformXRequest{}
 
 	return json.Marshal(platformXReq)
 }
@@ -58,12 +53,7 @@ func (b *PlatformXAdapter) UnmarshalResponse(respBytes []byte) (*model.AdInterna
 		return nil, err
 	}
 
-	return &model.AdInternalResponse{
-		AdID:      platformXResp.Ad_Id,
-		AdTitle:   platformXResp.Ad_Title,
-		AdContent: platformXResp.Ad_Content,
-		Price:     platformXResp.Price,
-	}, nil
+	return &model.AdInternalResponse{}, nil
 }
 
 // GetPlatformName 获取平台方名称

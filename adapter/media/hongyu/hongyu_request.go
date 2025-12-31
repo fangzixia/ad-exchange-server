@@ -1,4 +1,4 @@
-package adlink
+package hongyu
 
 // DEFAULT_VERSION 默认协议版本号常量
 const DEFAULT_VERSION = "1.6.0"

@@ -41,12 +41,7 @@ func NewPlatformYAdapter() *PlatformYAdapter {
 
 // MarshalRequest 内部平台方请求 -> PlatformY请求
 func (b *PlatformYAdapter) MarshalRequest(internalReq *model.AdInternalRequest) ([]byte, error) {
-	platformYReq := PlatformYRequest{
-		DeviceId:     internalReq.DeviceID,
-		DeviceCat:    internalReq.DeviceType,
-		UserUuid:     internalReq.UserID,
-		AdPositionId: internalReq.AdSpaceID,
-	}
+	platformYReq := PlatformYRequest{}
 
 	return json.Marshal(platformYReq)
 }
@@ -58,12 +53,7 @@ func (b *PlatformYAdapter) UnmarshalResponse(respBytes []byte) (*model.AdInterna
 		return nil, err
 	}
 
-	return &model.AdInternalResponse{
-		AdID:      platformYResp.AdvertId,
-		AdTitle:   platformYResp.Title,
-		AdContent: platformYResp.Desc,
-		Price:     platformYResp.BidPrice, // 异构字段转换为内部统一Price
-	}, nil
+	return &model.AdInternalResponse{}, nil
 }
 
 // GetPlatformName 获取平台方名称
