@@ -18,13 +18,13 @@ func NewAdapter() *Adapter {
 }
 
 // UnmarshalRequest 媒体A请求 -> 内部统一请求
-func (m *Adapter) UnmarshalRequest(r *http.Request) (*model.AdInternalRequest, error) {
+func (m *Adapter) UnmarshalRequest(r *http.Request) *model.AdInternalRequest {
 	var mediaAReq AdRequest
 	if err := json.NewDecoder(r.Body).Decode(&mediaAReq); err != nil {
-		return nil, err
+		return nil
 	}
 
-	return &model.AdInternalRequest{}, nil
+	return &model.AdInternalRequest{}
 }
 
 // MarshalResponse 内部统一响应 -> 媒体A响应

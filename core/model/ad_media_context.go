@@ -9,11 +9,17 @@ type MediaStatus int
 
 type MediaMessage string
 
-var MediaStatusInit MediaStatus = 0
+const (
+	MediaStatusInit MediaStatus = iota
+	MediaStatusChannelErr
+	MediaStatusMediaErr
+	MediaStatusUnmarshalErr
+)
 
 type AdMediaContent struct {
 	RequestID          string
 	ChannelId          int
+	MediaType          string
 	RequestTime        time.Time
 	AdInternalRequest  *AdInternalRequest
 	AdInternalResponse *AdInternalResponse
@@ -21,13 +27,11 @@ type AdMediaContent struct {
 	MediaMessage       string
 }
 
-func CreateMediaContent(request *AdInternalRequest, channelId int) *AdMediaContent {
+func CreateMediaContent() *AdMediaContent {
 	return &AdMediaContent{
-		RequestID:         uuid.GenerateUUID(),
-		RequestTime:       time.Now(),
-		ChannelId:         channelId,
-		AdInternalRequest: request,
-		MediaStatus:       MediaStatusInit,
+		RequestID:   uuid.GenerateUUID(),
+		RequestTime: time.Now(),
+		MediaStatus: MediaStatusInit,
 	}
 
 }

@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 // AdInternalRequest AdInternalRequest 内部统一广告请求模型（所有媒体协议最终转换为此格式）
 type AdInternalRequest struct {
 	// 请求ID
@@ -7,7 +9,7 @@ type AdInternalRequest struct {
 	// 协议版本号
 	Version string
 	// 请求时间戳（毫秒）
-	Timestamp int64
+	Timestamp time.Time
 	// 广告(曝光)信息，同一请求可包含多个曝光请求
 	AdSlots []*AdSlot
 	// 设备信息

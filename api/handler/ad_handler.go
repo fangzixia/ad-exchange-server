@@ -2,6 +2,7 @@ package handler
 
 import (
 	"ad-exchange-server/business/middleware"
+	"ad-exchange-server/infra/logger"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
@@ -14,6 +15,10 @@ import (
 
 // AdRequestHandler 广告请求处理器
 func AdRequestHandler(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		logger.Logger.Info("AdRequestHandler start")
+	}()
+
 	// 1. 获取媒体类型和渠道号
 	vars := mux.Vars(r)
 	mediaType := vars["mediaType"]
@@ -30,16 +35,18 @@ func AdRequestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// 4. 创建 content
+	mediaContent := model.CreateMediaContent()
+	mediaContent.ChannelId = channel
+
 	// 3. 媒体请求 -> 内部统一请求
-	internalReq, err := mediaAdapter.UnmarshalRequest(r)
+	interReq, err := mediaAdapter.UnmarshalRequest(r)
 	if err != nil {
-		log.Printf("媒体请求反序列化失败: %v", err)
+		mediaContent.MediaStatus = model.MediaStatusUnmarshalErr
 		http.Error(w, "request unmarshal failed", http.StatusBadRequest)
 		return
 	}
-
-	// 4. 创建 content
-	mediaContent := model.CreateMediaContent(internalReq, channel)
+	mediaContent.AdInternalRequest = interReq
 
 	mediaHandMiddleware := middleware.NewMediaHandMiddleware()
 	mediaHandMiddleware.Use(middleware.RequestLogMiddleware())
@@ -58,5 +65,5 @@ func AdRequestHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(respBytes)
-
+	logger.Logger.Info("AdRequestHandler end")
 }

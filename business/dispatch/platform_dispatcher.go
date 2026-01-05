@@ -25,7 +25,7 @@ func NewPlatformDispatcher() *PlatformDispatcher {
 }
 
 // Dispatch 并发分发请求给所有平台方
-func (d *PlatformDispatcher) Dispatch(c *model.AdPlatformContent, adapters []_interface.PlatformAdapter) []*model.AdInternalResponse {
+func (d *PlatformDispatcher) Dispatch(c *model.AdPlatformContent, adapters []_interface.PlatformAdapter) map[string]*model.AdInternalResponse {
 	var (
 		wg          sync.WaitGroup
 		respChan    = make(chan *model.AdInternalResponse, len(adapters))
@@ -47,7 +47,9 @@ func (d *PlatformDispatcher) Dispatch(c *model.AdPlatformContent, adapters []_in
 			}
 
 			// 2. 发送HTTP请求
-			respBytes, err := d.httpClient.Post(ctx, adapter.GetPlatformURL(), "application/json", reqBytes)
+			timeout, cancelFunc := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancelFunc()
+			respBytes, err := d.httpClient.Post(timeout, adapter.GetPlatformURL(), "application/json", reqBytes)
 			if err != nil {
 				log.Printf("平台方[%s]HTTP请求失败: %v", adapter.GetPlatformName(), err)
 				return
@@ -72,19 +74,17 @@ func (d *PlatformDispatcher) Dispatch(c *model.AdPlatformContent, adapters []_in
 	}()
 
 	// 收集响应
-	var platformResponses []*model.AdInternalResponse
+	var platformResponses = make(map[string]*model.AdInternalResponse)
 	select {
 	case <-ctx.Done():
-		log.Printf("平台方分发超时")
 	case <-time.After(d.timeout + 100*time.Millisecond):
-		// 等待所有响应收集
 	}
 
 	// 读取通道中所有响应
 	for {
 		select {
 		case resp := <-respChan:
-			platformResponses = append(platformResponses, resp)
+			platformResponses["titanvol"] = resp
 		default:
 			return platformResponses
 		}

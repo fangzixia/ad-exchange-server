@@ -8,9 +8,9 @@ import (
 
 // InitConfig 初始化配置
 func InitConfig() {
-	viper.SetConfigName("app")
+	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./configs")
+	viper.AddConfigPath("./")
 	viper.SetDefault("server.port", 8080)
 	viper.SetDefault("selection.strategy", "price_priority")
 

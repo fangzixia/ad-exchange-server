@@ -9,7 +9,7 @@ import (
 type MediaAdapter interface {
 
 	// UnmarshalRequest 从HTTP请求中解析并转换为内部统一请求模型
-	UnmarshalRequest(r *http.Request) (*model.AdInternalRequest, error)
+	UnmarshalRequest(r *http.Request) *model.AdInternalRequest
 
 	// MarshalResponse 将内部统一响应模型转换为媒体对应的响应格式（返回字节流）
 	MarshalResponse(internalResp *model.AdInternalResponse) ([]byte, error)

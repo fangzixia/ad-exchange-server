@@ -3,6 +3,7 @@ package httpclient
 import (
 	"bytes"
 	"context"
+	"io"
 	"net/http"
 	"time"
 )
@@ -48,5 +49,5 @@ func (h *HTTPClient) Post(ctx context.Context, url string, contentType string, b
 		return []byte(`{"platform_id":"platform_y","advert_id":"ad_y_001","title":"Y品牌家电特惠","description":"满1000减200","bid_price":0.6,"quality_level":9,"available":true}`), nil
 	}
 
-	return []byte{}, nil
+	return io.ReadAll(resp.Body)
 }
