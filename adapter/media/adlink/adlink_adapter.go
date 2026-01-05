@@ -253,13 +253,13 @@ func createDevice(r *AdRequest) *model.Device {
 
 	if r.Device.Caids != nil && len(r.Device.Caids) > 0 {
 		caid := make([]*model.Caid, len(r.Device.Caids))
-		for _, c := range r.Device.Caids {
+		for i, c := range r.Device.Caids {
 			split := strings.Split(c, ",")
 			mc := &model.Caid{
 				Caid:    split[0],
 				Version: split[1],
 			}
-			caid = append(caid, mc)
+			caid[i] = mc
 		}
 		d.Caids = caid
 	}
