@@ -31,7 +31,7 @@ type AdSlot struct {
 	AdType      int      `json:"adType"`      // 广告类型：banner=1，插屏=2，开屏=3，信息流=4，贴片=5，激励视频=6；其它原生广告=7
 	Pos         int      `json:"pos"`         // 广告展现位置：顶部=1；底部=2；信息流内=3；中部=4；全屏=5
 	BidType     int      `json:"bidType"`     // 允许的竞价类型，目前仅支持CPM(0-CPM,1-CPC,2-CPA)
-	BidFloor    int64    `json:"bidFloor"`    // 最低千次展现单价，单位人民币分
+	BidFloor    int      `json:"bidFloor"`    // 最低千次展现单价，单位人民币分
 	W           int      `json:"w"`           // 广告位实际尺寸宽，单位像素
 	H           int      `json:"h"`           // 广告位实际尺寸高，单位像素
 	WMax        int      `json:"wmax"`        // 允许的最大宽度值

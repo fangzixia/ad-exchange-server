@@ -40,8 +40,8 @@ func AdRequestHandler(w http.ResponseWriter, r *http.Request) {
 	mediaContent.ChannelId = channel
 
 	// 3. 媒体请求 -> 内部统一请求
-	interReq, err := mediaAdapter.UnmarshalRequest(r)
-	if err != nil {
+	interReq := mediaAdapter.UnmarshalRequest(r)
+	if interReq == nil {
 		mediaContent.MediaStatus = model.MediaStatusUnmarshalErr
 		http.Error(w, "request unmarshal failed", http.StatusBadRequest)
 		return

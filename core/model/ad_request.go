@@ -2,6 +2,8 @@ package model
 
 import "time"
 
+const AD_INTERNAL_VERSION = "1.0.0"
+
 // AdInternalRequest AdInternalRequest 内部统一广告请求模型（所有媒体协议最终转换为此格式）
 type AdInternalRequest struct {
 	// 请求ID
@@ -115,7 +117,7 @@ type AdSlot struct {
 	// 广告位视频允许跳过的时间，单位：秒
 	SkipAfterTime int
 	// 视频广告类型（原Java中为枚举，暂定义为字符串）
-	VideoType string
+	VideoType int
 	// 是否支持微信小程序：true-支持、false-不支持
 	SupportWx bool
 	// 是否支持302跳转：true-支持、false-不支持
@@ -139,7 +141,7 @@ type Device struct {
 	// 设备所在ipv6地址（公网IPv6）
 	Ipv6 string
 	// 设备类型（枚举：手机/平板/PC等，暂定义为字符串）
-	DeviceType string
+	DeviceType int
 	// 制造商
 	Make string
 	// 设备型号
@@ -147,17 +149,17 @@ type Device struct {
 	// 设备品牌
 	Brand string
 	// 用户终端操作系统（枚举：Android/iOS等，暂定义为字符串）
-	Os string
+	Os int
 	// 操作系统版本号
 	OsVersion string
 	// 运营商（枚举：移动/联通/电信等，暂定义为字符串）
-	Carrier string
+	Carrier int
 	// 设备序列号
 	Sn string
 	// 手机设备的meid号（电信必备）
 	Meid string
 	// 网络类型（枚举：4G/WiFi等，暂定义为字符串）
-	Network string
+	Network int
 	// 国际移动客户识别码
 	Imsi string
 	// 用户终端的IMEI（md5加密）
@@ -203,7 +205,7 @@ type Device struct {
 	// 屏幕尺寸
 	ScreenSize string
 	// caid列表
-	Caids []Caid
+	Caids []*Caid
 	// 匿名广告设备标识符（阿里AAID）
 	Aaid string
 	// 系统启动标识（原始传输）
@@ -319,6 +321,8 @@ type User struct {
 	Age int
 	// 用户画像关键字列表（多关键字逗号隔开）
 	Keywords []string
-	// 出生日期，格式为YYYYMMDD
+	// 出生日期，格式为 YYYYMMDD
 	DateOfBirth int
+	//安装 app 列表
+	AppList []string
 }
