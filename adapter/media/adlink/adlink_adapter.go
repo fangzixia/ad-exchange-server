@@ -33,8 +33,7 @@ func (m *Adapter) UnmarshalRequest(r *http.Request) *model.AdInternalRequest {
 
 // MarshalResponse 内部统一响应 -> 媒体A响应
 func (m *Adapter) MarshalResponse(internalResp *model.AdInternalResponse) ([]byte, error) {
-	mediaAResp := AdResponse{}
-
+	mediaAResp := adaptResponse(internalResp)
 	return json.Marshal(mediaAResp)
 }
 
@@ -265,4 +264,12 @@ func createDevice(r *AdRequest) *model.Device {
 	}
 	d.Ppi = strconv.Itoa(r.Device.Ppi)
 	return d
+}
+
+func adaptResponse(ir *model.AdInternalResponse) *AdResponse {
+	ar := &AdResponse{}
+	ar.Code = 0
+	ar.Message = ""
+	return ar
+
 }
