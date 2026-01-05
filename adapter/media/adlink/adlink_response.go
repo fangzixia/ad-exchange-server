@@ -10,11 +10,9 @@ type AdResponse struct {
 	// 开发使用的返回信息，协议中不需要
 	Message string `json:"message,omitempty"`
 	// seatbid列表，如果参与竞价，必须包含一个seatbid对象
-	SeatBid []SeatBid `json:"seatBid"`
+	SeatBid []*SeatBid `json:"seatBid"`
 	// 由DSP生成的responseid，用于logging/tracking
 	BidID string `json:"bidID,omitempty"`
-	// 扩展信息
-	Ext interface{} `json:"ext,omitempty"`
 }
 
 // SeatBid 代表DSP端的一个广告主

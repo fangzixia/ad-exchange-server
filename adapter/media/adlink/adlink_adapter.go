@@ -268,8 +268,13 @@ func createDevice(r *AdRequest) *model.Device {
 
 func adaptResponse(ir *model.AdInternalResponse) *AdResponse {
 	ar := &AdResponse{}
-	ar.Code = 0
-	ar.Message = ""
+	if ir.AdInfos == nil || len(ir.AdInfos) == 0 {
+		ar.Code = 0
+		ar.Message = "广告内容为空"
+		return ar
+	}
+	bids := make([]*SeatBid, len(ir.AdInfos))
+	ar.SeatBid = bids
 	return ar
 
 }
