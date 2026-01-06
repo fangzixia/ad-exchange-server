@@ -1,12 +1,12 @@
 package titanvol
 
 type AdRequest struct {
-	Tid        string       `json:"tid"`
-	Timestamp  int64        `json:"timestamp"`
-	Impression []Impression `json:"impression"`
-	Device     *Device      `json:"device,omitempty"`
-	App        *App         `json:"app,omitempty"`
-	User       *User        `json:"user,omitempty"`
+	Tid        string        `json:"tid"`
+	Timestamp  int64         `json:"timestamp"`
+	Impression []*Impression `json:"impression"`
+	Device     *Device       `json:"device,omitempty"`
+	App        *App          `json:"app,omitempty"`
+	User       *User         `json:"user,omitempty"`
 }
 
 // Impression 嵌套结构体（原Java静态内部类）
@@ -93,7 +93,7 @@ type Device struct {
 	Ppi               string   `json:"ppi"`
 	Density           float32  `json:"density"`
 	Inch              float32  `json:"inch"`
-	CaidList          []Caid   `json:"caidList,omitempty"`
+	CaidList          []*Caid  `json:"caidList,omitempty"`
 	Aaid              string   `json:"aaid"`
 	BootMark          string   `json:"bootMark"`
 	UpdateMark        string   `json:"updateMark"`

@@ -279,7 +279,7 @@ type Device struct {
 	// iOS：cpu数量
 	CpuNum int
 	// iOS：手机cpu频率（单位GHz）
-	CpuFreq int
+	CpuFreq float32
 	// 硬件设备型号：安卓："Redmi K30Pro"，iOS："iPhone"
 	HwModel string
 	// 硬件设备名称（原值与md5填其一，iOS获取不到IDFA时必填）

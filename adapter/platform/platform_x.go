@@ -40,7 +40,7 @@ func NewPlatformXAdapter() *PlatformXAdapter {
 }
 
 // MarshalRequest 内部平台方请求 -> PlatformX请求
-func (b *PlatformXAdapter) MarshalRequest(internalReq *model.AdInternalRequest) ([]byte, error) {
+func (b *PlatformXAdapter) MarshalRequest(internalReq *model.AdPlatformContent) ([]byte, error) {
 	platformXReq := PlatformXRequest{}
 
 	return json.Marshal(platformXReq)

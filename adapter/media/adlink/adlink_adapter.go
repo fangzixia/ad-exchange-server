@@ -200,6 +200,7 @@ func createDevice(r *AdRequest) *model.Device {
 	d.SysCompileTime = r.Device.SysCompilingTime
 	d.Sn = r.Device.SerialNo
 	d.CpuNum = r.Device.CpuNum
+	//d.CpuFreq = r.Device.CP
 	d.BatteryStatus = r.Device.BatteryStatus
 	d.BatteryPower = r.Device.BatteryPower
 

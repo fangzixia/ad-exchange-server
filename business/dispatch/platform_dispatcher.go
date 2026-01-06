@@ -40,7 +40,7 @@ func (d *PlatformDispatcher) Dispatch(c *model.AdPlatformContent, adapters []_in
 		go func(adapter _interface.PlatformAdapter) {
 			defer wg.Done()
 			// 1. 内部请求 -> 平台方协议请求
-			reqBytes, err := adapter.MarshalRequest(c.AdInternalRequest)
+			reqBytes, err := adapter.MarshalRequest(c)
 			if err != nil {
 				log.Printf("平台方[%s]请求序列化失败: %v", adapter.GetPlatformName(), err)
 				return
