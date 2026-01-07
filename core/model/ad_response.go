@@ -2,30 +2,30 @@ package model
 
 // AdInternalResponse 内部统一广告响应模型（所有媒体协议最终转换为此格式）
 type AdInternalResponse struct {
-	RequestId string   // 对应的广告请求 id
-	AdInfos   []AdInfo // 广告填充实例
+	RequestId string    // 对应的广告请求 id
+	AdInfos   []*AdInfo // 广告填充实例
 }
 
 // AdInfo 广告请求填充物
 type AdInfo struct {
-	Aid           int64           // 广告位 id
-	AdFormat      int             // 广告展现形式
-	Price         int             // 上游平台竞标出价
-	WinNotice     string          // 竞价成功通知地址
-	WinFailNotice string          // 竞价失败通知地址
-	ClickAction   int             // 点击动作类型：0-打开网页 1-下载 2-appstore 3-deeplink 4-微信小程序 5-广点通二次下载
-	LandingPage   string          // 落地页地址
-	Source        string          // 广告来源标识文字
-	SourceLogoUrl string          // 广告来源标识的logo图片url
-	Deeplink      string          // deeplink地址
-	DeepULink     string          // IOS通用唤起链接(UniversalLink)
-	IsGDT         bool            // 是否广点通广告
-	Advertiser    string          // 广告主名称
-	AdvertiserId  string          // 广告主ID
-	App           AppInfo         // APP信息（若广告是APP下载类型）
-	MiniProgram   MiniProgram     // 小程序信息（若广告是小程序类型）
-	ThirdTracings []ThirdTracking // 监测地址
-	Creative      Creative        // 创意对象列表
+	Aid           int64            // 广告位 id
+	AdFormat      int              // 广告展现形式
+	Price         int              // 上游平台竞标出价
+	WinNotice     string           // 竞价成功通知地址
+	WinFailNotice string           // 竞价失败通知地址
+	ClickAction   int              // 点击动作类型：0-打开网页 1-下载 2-appstore 3-deeplink 4-微信小程序 5-广点通二次下载
+	LandingPage   string           // 落地页地址
+	Source        string           // 广告来源标识文字
+	SourceLogoUrl string           // 广告来源标识的logo图片url
+	Deeplink      string           // deeplink地址
+	DeepULink     string           // IOS通用唤起链接(UniversalLink)
+	IsGDT         bool             // 是否广点通广告
+	Advertiser    string           // 广告主名称
+	AdvertiserId  string           // 广告主ID
+	App           *AppInfo         // APP信息（若广告是APP下载类型）
+	MiniProgram   *MiniProgram     // 小程序信息（若广告是小程序类型）
+	ThirdTracings []*ThirdTracking // 监测地址
+	Creative      *Creative        // 创意对象列表
 }
 
 // AppInfo 下载的应用信息
@@ -71,27 +71,27 @@ type MiniProgram struct {
 
 // ThirdTracking 第三方广告监测实体（对应 ThirdTracking.java）
 type ThirdTracking struct {
-	Type int      // 监测类型（映射 TrackingType 枚举，Go 中用 int 替代）
-	Urls []string // 监测URL列表
+	Type int
+	Urls []string
 }
 
 // Creative 广告创意类（对应 Creative.java）
 type Creative struct {
-	Title              string          // 创意标题
-	Description        string          // 创意描述
-	Cta                string          // 广告按钮文字
-	Rating             float32         // 评分等级
-	Icon               Image           // 广告创意Icon
-	Images             []Image         // 广告创意图片
-	ImageMode          int             // 素材模式：小图=2 大图=3 组图=4 横屏视频=5 竖屏视频=6
-	CreativeVideo      CreativeVideo   // 视频类型创意
-	CreativeId         string          // 创意ID
-	HtmlSnippet        string          // Html类型的创意代码
-	Index              int             // 创意在广告请求中的唯一序号
-	LocalTrackingEvent []TrackingEvent // 自身平台的监测（已废弃）
-	ImpUrls            []string        // 上游平台返回的曝光监测地址列表
-	ClickUrls          []string        // 上游平台返回的点击监测地址列表
-	ThirdTrackingUrls  []ThirdTracking // 其他事件监测
+	Title              string           // 创意标题
+	Description        string           // 创意描述
+	Cta                string           // 广告按钮文字
+	Rating             float32          // 评分等级
+	Icon               *Image           // 广告创意Icon
+	Images             []*Image         // 广告创意图片
+	ImageMode          int              // 素材模式：小图=2 大图=3 组图=4 横屏视频=5 竖屏视频=6
+	CreativeVideo      *CreativeVideo   // 视频类型创意
+	CreativeId         string           // 创意ID
+	HtmlSnippet        string           // Html类型的创意代码
+	Index              int              // 创意在广告请求中的唯一序号
+	LocalTrackingEvent []*TrackingEvent // 自身平台的监测（已废弃）
+	ImpUrls            []string         // 上游平台返回的曝光监测地址列表
+	ClickUrls          []string         // 上游平台返回的点击监测地址列表
+	ThirdTrackingUrls  []*ThirdTracking // 其他事件监测
 }
 
 // Image 图片信息（对应 Image.java）
@@ -127,9 +127,8 @@ type CreativeVideo struct {
 	PlayType           int              // 播放类型：1-自动播放 2-点击播放
 	PrefetchEnable     bool             // 是否开启预加载
 	Mimes              []string         // 支持的视频内容类型
-	PointTrackers      []PointTrack     // 视频按秒上报事件
+	PointTrackers      []*PointTrack    // 视频按秒上报事件
 	BackgroundImage    string           // 视频背景图片（不播放视频时显示）
-	VideoTracking      VideoTracking    // 视频监测信息
 	ImpressionTracking map[int][]string // 播放监测URL
 	KeepSecond         int              // 强制观看秒数
 	Icon               string           // 激励视频特有字段
@@ -141,9 +140,9 @@ type PointTrack struct {
 	Urls []string // 上报地址列表
 }
 
-type TrackingEvent struct{} // 自身平台监测事件（对应 TrackingEvent.java）
-type VideoTracking struct{} // 视频监测信息（对应 VideoTracking.java）
-type Event struct {         // 创意交互事件（对应 Event.java）
+type TrackingEvent struct {
+}                   // 自身平台监测事件（对应 TrackingEvent.java）
+type Event struct { // 创意交互事件（对应 Event.java）
 	Type  int    // 交互类型（映射 Interaction 枚举，Go 中用 int 替代）
 	Value string // 广告点击互动内容
 }

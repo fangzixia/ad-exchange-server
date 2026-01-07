@@ -18,7 +18,7 @@ type AdResponse struct {
 // SeatBid 代表DSP端的一个广告主
 type SeatBid struct {
 	// 竞价信息
-	Bid Bid `json:"bid"`
+	Bid *Bid `json:"bid"`
 	// 该次竞价是代表谁参与的，一般设置成广告主id，用于logging/tracking
 	Seat string `json:"seat,omitempty"`
 }
@@ -40,9 +40,9 @@ type Bid struct {
 	// 竞价失败通知地址，建议支持回传
 	Lurl string `json:"lurl,omitempty"`
 	// 广告素材
-	Creative MaterialMeta `json:"creative"`
+	Creative *MaterialMeta `json:"creative"`
 	// 如果响应的素材是app下载，则包含该app的信息
-	App AppData `json:"app,omitempty"`
+	App *AppData `json:"app,omitempty"`
 	// 点击行为：0-打开网页，1-下载，2-appstore，3-deeplink，4-微信小程序，5-广点通二次下载
 	ClickAction int `json:"clickAction"`
 	// 点击落地页，如果是app下载则为app下载地址。媒体点击地址会优先使用deeplink，landing次之
@@ -54,7 +54,7 @@ type Bid struct {
 	// deeplink地址，如果是调起广告。媒体点击地址会优先使用deeplink，landing次之
 	Deeplink string `json:"deeplink,omitempty"`
 	// event上报地址，曝光、点击、deeplink唤醒上报等
-	EventTrack EventTrack `json:"eventTrack,omitempty"`
+	EventTrack *EventTrack `json:"eventTrack,omitempty"`
 	// 广告过期时间，单位秒，针对预加载广告
 	ExpirationTime int `json:"expirationTime,omitempty"`
 	// 扩展信息
@@ -72,19 +72,19 @@ type MaterialMeta struct {
 	// 评分等级
 	Rating string `json:"rating,omitempty"`
 	// 广告icon
-	Icon Image `json:"icon,omitempty"`
+	Icon *Image `json:"icon,omitempty"`
 	// 广告图片主体，一张图片
-	Image Image `json:"image,omitempty"`
+	Image *Image `json:"image,omitempty"`
 	// 广告图片主体，多张图片
-	Images []Image `json:"images,omitempty"`
+	Images []*Image `json:"images,omitempty"`
 	// 素材模式：小图=2，大图=3，组图=4，横屏视频=5，竖屏视频=6
 	ImageMode int `json:"imageMode,omitempty"`
 	// 视频广告资源
-	Video Video `json:"video,omitempty"`
+	Video *Video `json:"video,omitempty"`
 	// Banner广告HTML资源
 	HtmlSnippet string `json:"htmlSnippet,omitempty"`
 	// 小程序广告资源
-	MiniProgram MiniProgram `json:"miniProgram,omitempty"`
+	MiniProgram *MiniProgram `json:"miniProgram,omitempty"`
 }
 
 // AppData App下载信息（仅素材为app下载时包含）

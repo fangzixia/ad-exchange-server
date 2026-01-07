@@ -9,7 +9,7 @@ type PlatformAdapter interface {
 	MarshalRequest(internalReq *model.AdPlatformContent) ([]byte, error)
 
 	// UnmarshalResponse 将平台方响应字节流转换为内部统一响应模型
-	UnmarshalResponse(respBytes []byte) (*model.AdInternalResponse, error)
+	UnmarshalResponse(c *model.AdPlatformContent, respBytes []byte) (*model.AdInternalResponse, error)
 
 	// GetPlatformName 获取适配器对应的平台方类型
 	GetPlatformName() string

@@ -27,15 +27,12 @@ func (b *Adapter) MarshalRequest(internalReq *model.AdPlatformContent) ([]byte, 
 }
 
 // UnmarshalResponse PlatformY响应 -> 内部统一响应
-func (b *Adapter) UnmarshalResponse(respBytes []byte) (*model.AdInternalResponse, error) {
-	var titanvolResp AdResponse
-	if err := json.Unmarshal(respBytes, &titanvolResp); err != nil {
+func (b *Adapter) UnmarshalResponse(c *model.AdPlatformContent, respBytes []byte) (*model.AdInternalResponse, error) {
+	var bidResp AdResponse
+	if err := json.Unmarshal(respBytes, &bidResp); err != nil {
 		return nil, err
 	}
-
-	return &model.AdInternalResponse{
-		AdInfos: make([]model.AdInfo, 1),
-	}, nil
+	return adaptResponse(&bidResp), nil
 }
 
 // GetPlatformName 获取平台方名称
@@ -46,6 +43,180 @@ func (b *Adapter) GetPlatformName() string {
 // GetPlatformURL 获取平台方接口地址
 func (b *Adapter) GetPlatformURL() string {
 	return b.platformURL
+}
+
+func adaptResponse(bidResp *AdResponse) *model.AdInternalResponse {
+	resp := &model.AdInternalResponse{}
+	if bidResp == nil || bidResp.SeatBid == nil || len(bidResp.SeatBid) == 0 {
+		return nil
+	}
+	adInfos := make([]*model.AdInfo, len(bidResp.SeatBid))
+	for i, bid := range bidResp.SeatBid {
+		b := bid.Bid[0]
+		adInfo := &model.AdInfo{}
+
+		adInfo.Aid = 0
+		adInfo.AdFormat = 0
+		adInfo.Advertiser = b.AdverName
+		adInfo.AdvertiserId = b.AdverId
+		adInfo.Price = b.Price
+		adInfo.WinNotice = b.Nurl
+		adInfo.WinFailNotice = b.Lurl
+
+		if (b.ClickAction == 1) || (b.ClickAction == 3) {
+			adInfo.ClickAction = 0
+		} else if b.ClickAction == 2 {
+			adInfo.ClickAction = 2
+		} else if b.ClickAction == 2 {
+			adInfo.ClickAction = 1
+		} else if b.ClickAction == 5 {
+			adInfo.ClickAction = 3
+		} else if b.ClickAction == 6 {
+			adInfo.ClickAction = 5
+		} else if b.ClickAction == 11 {
+			adInfo.ClickAction = 4
+		} else {
+			adInfo.ClickAction = 0
+		}
+
+		adInfo.LandingPage = b.Landing
+		adInfo.Source = b.Source
+		adInfo.SourceLogoUrl = b.SourceLogo
+		adInfo.Deeplink = b.DeepLink
+		adInfo.DeepULink = b.DeepUlink
+		if b.Isgdt == 1 {
+			adInfo.IsGDT = true
+		}
+
+		if b.App != nil {
+			app := model.AppInfo{}
+			app.Name = b.App.Name
+			app.Bundle = b.App.Bundle
+			app.ItunesId = b.App.ItunesId
+			app.MarketUrl = b.App.MarketUrl
+			app.Relation = b.App.Relation
+			app.IconUrl = b.App.IconUrl
+			app.IconWidth = b.App.IconW
+			app.IconHeight = b.App.IconH
+			app.Version = b.App.Version
+			app.VersionCode = b.App.VersionCode
+			app.UpdateTime = b.App.UpdateTime
+			app.QuickUrl = b.App.QuickUrl
+			app.DownloadUrl = b.App.DownUrl
+			app.ApkMD5 = b.App.Md5
+			app.Developer = b.App.Developer
+			app.Introduction = b.App.Intro
+			app.IntroductionLink = b.App.IntroLink
+			app.PrivacyPolicy = b.App.PrivatePolicy
+			app.PrivacyPolicyLink = b.App.PrivatePolicyLink
+			app.Permissions = b.App.Permissions
+			app.PermissionsLink = b.App.PermissionsLink
+			app.Size = b.App.Size
+			app.Rating = b.App.Rating
+			app.Downloads = b.App.Downloads
+			app.Comments = b.App.Comments
+			app.Snapshots = b.App.Snapshots
+			app.Description = b.App.Desc
+			app.Tags = b.App.Tag
+			app.Icp = b.App.Icp
+			adInfo.App = &app
+		}
+		if b.MiniProgram != nil {
+			mp := model.MiniProgram{}
+			mp.Id = b.MiniProgram.Id
+			mp.AppId = b.MiniProgram.AppId
+			mp.Path = b.MiniProgram.Path
+			mp.Name = b.MiniProgram.Name
+			adInfo.MiniProgram = &mp
+		}
+		if b.Trackings != nil && len(b.Trackings) > 0 {
+			ts := make([]*model.ThirdTracking, len(b.Trackings))
+			for i, t := range b.Trackings {
+				ts[i] = &model.ThirdTracking{
+					Type: t.EventType,
+					Urls: t.Urls,
+				}
+			}
+			adInfo.ThirdTracings = ts
+		}
+
+		creative := &model.Creative{}
+		creative.Title = b.Creative.Title
+		creative.Description = b.Creative.Description
+		creative.Cta = b.Creative.Cta
+		creative.Rating = b.Creative.Rating
+		if b.Creative.Icon == nil {
+			icon := &model.Image{}
+			icon.Url = b.Creative.Icon.Url
+			icon.Width = b.Creative.Icon.Width
+			icon.Height = b.Creative.Icon.Height
+			icon.Size = b.Creative.Icon.Size
+			icon.Ratio = b.Creative.Icon.Ratio
+			icon.Mimes = b.Creative.Icon.Mimes
+			creative.Icon = icon
+		}
+		if b.Creative.Images == nil && len(b.Creative.Images) > 0 {
+			images := make([]*model.Image, len(b.Creative.Images))
+			for mi, ci := range b.Creative.Images {
+				image := &model.Image{}
+				image.Url = ci.Url
+				image.Width = ci.Width
+				image.Height = ci.Height
+				image.Size = ci.Size
+				image.Ratio = ci.Ratio
+				image.Mimes = ci.Mimes
+				images[mi] = image
+			}
+			creative.Images = images
+		}
+		if b.Creative.Video != nil {
+			creativeVideo := model.CreativeVideo{}
+			creativeVideo.Oriented = b.Creative.Video.Type
+			creativeVideo.Title = b.Creative.Video.Title
+			creativeVideo.Description = b.Creative.Video.Desc
+			creativeVideo.Width = b.Creative.Video.Width
+			creativeVideo.Height = b.Creative.Video.Height
+			creativeVideo.Url = b.Creative.Video.Url
+			creativeVideo.CoverUrl = b.Creative.Video.CoverUrl
+			creativeVideo.CoverWidth = b.Creative.Video.CoverWidth
+			creativeVideo.CoverHeight = b.Creative.Video.CoverHeight
+			creativeVideo.Duration = b.Creative.Video.Duration
+			creativeVideo.Size = b.Creative.Video.Size
+			creativeVideo.Resolution = b.Creative.Video.Resolution
+			creativeVideo.MinDuration = b.Creative.Video.MinDuration
+			creativeVideo.AfterHtml = b.Creative.Video.Afterhtml
+			creativeVideo.AfterButtonText = b.Creative.Video.AfterBtnText
+			creativeVideo.AfterButtonUrl = b.Creative.Video.AfterBtnUrl
+			creativeVideo.ValidTime = b.Creative.Video.ValidTime
+			creativeVideo.PlayType = b.Creative.Video.PlayType
+			if b.Creative.Video.Prefetch == 1 {
+				creativeVideo.PrefetchEnable = true
+			} else {
+				creativeVideo.PrefetchEnable = false
+			}
+			creativeVideo.Mimes = b.Creative.Video.Mimes
+			if b.Creative.Video.Trackings != nil && len(b.Creative.Video.Trackings) > 0 {
+				pts := make([]*model.PointTrack, len(b.Creative.Video.Trackings))
+				for pi, t := range b.Creative.Video.Trackings {
+					pointTrack := model.PointTrack{
+						Ts:   t.Ts,
+						Urls: t.Urls,
+					}
+					pts[pi] = &pointTrack
+				}
+				creativeVideo.PointTrackers = pts
+			}
+
+			creative.CreativeVideo = &creativeVideo
+		}
+
+		creative.ImageMode = b.Creative.ImageMode
+		adInfo.Creative = creative
+
+		adInfos[i] = adInfo
+	}
+	resp.AdInfos = adInfos
+	return resp
 }
 
 func adaptRequest(c *model.AdPlatformContent) *AdRequest {

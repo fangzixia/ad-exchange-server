@@ -29,16 +29,20 @@ func (d *PlatformDispatcher) Dispatch(c *model.AdPlatformContent, adapters []_in
 	var (
 		wg          sync.WaitGroup
 		respChan    = make(chan *model.AdInternalResponse, len(adapters))
+		doneChan    = make(chan struct{})
 		ctx, cancel = context.WithTimeout(context.Background(), d.timeout)
 	)
 	defer cancel()
 	defer close(respChan)
-
+	log.Println("开始处理转发")
 	// 并发请求每个平台方
 	for _, adapter := range adapters {
 		wg.Add(1)
 		go func(adapter _interface.PlatformAdapter) {
-			defer wg.Done()
+			defer func() {
+				log.Println("平台 defer")
+				defer wg.Done()
+			}()
 			// 1. 内部请求 -> 平台方协议请求
 			reqBytes, err := adapter.MarshalRequest(c)
 			if err != nil {
@@ -56,37 +60,40 @@ func (d *PlatformDispatcher) Dispatch(c *model.AdPlatformContent, adapters []_in
 			}
 
 			// 3. 平台方响应 -> 内部统一响应
-			internalResp, err := adapter.UnmarshalResponse(respBytes)
+			internalResp, err := adapter.UnmarshalResponse(c, respBytes)
 			if err != nil {
 				log.Printf("平台方[%s]响应反序列化失败: %v", adapter.GetPlatformName(), err)
 				return
 			}
 
 			if internalResp.AdInfos != nil && len(internalResp.AdInfos) > 0 {
+				log.Println("平台序列化完成")
 				respChan <- internalResp
 			}
 		}(adapter)
 	}
-
 	// 等待所有goroutine结束
 	go func() {
 		wg.Wait()
+		close(doneChan)
 	}()
 
 	// 收集响应
 	var platformResponses = make(map[string]*model.AdInternalResponse)
 	select {
 	case <-ctx.Done():
-	case <-time.After(d.timeout + 100*time.Millisecond):
+	case <-doneChan:
 	}
-
+	log.Println("通道处理完成")
 	// 读取通道中所有响应
 	for {
 		select {
 		case resp := <-respChan:
+			log.Println("处理完成")
 			platformResponses["titanvol"] = resp
 		default:
 			return platformResponses
 		}
 	}
+
 }

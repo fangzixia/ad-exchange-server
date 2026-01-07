@@ -47,7 +47,7 @@ func (b *PlatformXAdapter) MarshalRequest(internalReq *model.AdPlatformContent) 
 }
 
 // UnmarshalResponse PlatformX响应 -> 内部统一响应
-func (b *PlatformXAdapter) UnmarshalResponse(respBytes []byte) (*model.AdInternalResponse, error) {
+func (b *PlatformXAdapter) UnmarshalResponse(c *model.AdPlatformContent, respBytes []byte) (*model.AdInternalResponse, error) {
 	var platformXResp PlatformXResponse
 	if err := json.Unmarshal(respBytes, &platformXResp); err != nil {
 		return nil, err

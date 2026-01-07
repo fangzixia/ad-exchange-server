@@ -1,17 +1,16 @@
 package titanvol
 
-// BidUpperResponseDTO 对应 Java 中的 BidUpperResponseDTO 主类
 type AdResponse struct {
-	Code    int       `json:"code"`
-	Message string    `json:"message"`
-	Tid     string    `json:"tid"`
-	SeatBid []SeatBid `json:"seatBid"` // Java 数组转 Go 切片
-	BidId   string    `json:"bidId"`
+	Code    int        `json:"code"`
+	Message string     `json:"message"`
+	Tid     string     `json:"tid"`
+	SeatBid []*SeatBid `json:"seatBid"`
+	BidId   string     `json:"bidId"`
 }
 
 // SeatBid 对应 Java 中 SeatBid 静态内部类
 type SeatBid struct {
-	Bid []Bid `json:"bid"` // Java 数组转 Go 切片
+	Bid []*Bid `json:"bid"`
 }
 
 // Bid 对应 Java 中 Bid 静态内部类
@@ -19,7 +18,7 @@ type Bid struct {
 	Id          string                 `json:"id"`
 	ImpId       string                 `json:"impId"`
 	Expire      int                    `json:"expire"`
-	Creative    Creative               `json:"creative"`
+	Creative    *Creative              `json:"creative"`
 	AdverId     string                 `json:"adverId"`
 	AdverName   string                 `json:"adverName"`
 	Vocation    int                    `json:"vocation"`
@@ -33,9 +32,9 @@ type Bid struct {
 	DeepLink    string                 `json:"deepLink"`
 	DeepUlink   string                 `json:"deepUlink"`
 	Isgdt       int                    `json:"isgdt"`
-	App         AppInfo                `json:"app"`
-	MiniProgram MiniProgram            `json:"miniProgram"` // Java 中仅声明未定义字段，先空结构体
-	Trackings   []Tracking             `json:"trackings"`   // Java List 转 Go 切片
+	App         *AppInfo               `json:"app"`
+	MiniProgram *MiniProgram           `json:"miniProgram"` // Java 中仅声明未定义字段，先空结构体
+	Trackings   []*Tracking            `json:"trackings"`   // Java List 转 Go 切片
 	Ext         map[string]interface{} `json:"ext"`         // Java Map<String, Object> 转 Go map
 }
 
@@ -51,10 +50,10 @@ type Creative struct {
 	Description string   `json:"description"`
 	Cta         string   `json:"cta"`
 	Rating      float32  `json:"rating"` // Java float 对应 Go float32
-	Icon        Image    `json:"icon"`
-	Images      []Image  `json:"Images"` // Java 数组转切片，JSON 标签与 Java 字段名（Images）一致
+	Icon        *Image   `json:"icon"`
+	Images      []*Image `json:"Images"` // Java 数组转切片，JSON 标签与 Java 字段名（Images）一致
 	ImageMode   int      `json:"imageMode"`
-	Video       Video    `json:"video"`
+	Video       *Video   `json:"video"`
 	Mimes       []string `json:"mimes"` // Java List<String> 转 Go 字符串切片
 }
 
@@ -70,28 +69,28 @@ type Image struct {
 
 // Video 对应 Java 中 Video 静态内部类
 type Video struct {
-	Type         int             `json:"type"`
-	Title        string          `json:"title"`
-	Desc         string          `json:"desc"`
-	Width        int             `json:"width"`
-	Height       int             `json:"height"`
-	Url          string          `json:"url"`
-	CoverUrl     string          `json:"coverUrl"`
-	CoverWidth   int             `json:"coverWidth"`
-	CoverHeight  int             `json:"coverHeight"`
-	EndCoverUrl  string          `json:"endCoverUrl"`
-	Duration     int             `json:"duration"`
-	Size         int             `json:"size"`
-	Resolution   string          `json:"resolution"`
-	MinDuration  int             `json:"minDuration"`
-	Afterhtml    string          `json:"afterhtml"`
-	AfterBtnText string          `json:"afterBtnText"`
-	ValidTime    int             `json:"validTime"`
-	AfterBtnUrl  string          `json:"afterBtnUrl"`
-	PlayType     int             `json:"playType"`
-	Prefetch     int             `json:"prefetch"`
-	Mimes        []string        `json:"mimes"`     // Java 数组转 Go 字符串切片
-	Trackings    []PointTracking `json:"trackings"` // Java List 转 Go 切片
+	Type         int              `json:"type"`
+	Title        string           `json:"title"`
+	Desc         string           `json:"desc"`
+	Width        int              `json:"width"`
+	Height       int              `json:"height"`
+	Url          string           `json:"url"`
+	CoverUrl     string           `json:"coverUrl"`
+	CoverWidth   int              `json:"coverWidth"`
+	CoverHeight  int              `json:"coverHeight"`
+	EndCoverUrl  string           `json:"endCoverUrl"`
+	Duration     int              `json:"duration"`
+	Size         int              `json:"size"`
+	Resolution   string           `json:"resolution"`
+	MinDuration  int              `json:"minDuration"`
+	Afterhtml    string           `json:"afterhtml"`
+	AfterBtnText string           `json:"afterBtnText"`
+	ValidTime    int              `json:"validTime"`
+	AfterBtnUrl  string           `json:"afterBtnUrl"`
+	PlayType     int              `json:"playType"`
+	Prefetch     int              `json:"prefetch"`
+	Mimes        []string         `json:"mimes"`     // Java 数组转 Go 字符串切片
+	Trackings    []*PointTracking `json:"trackings"` // Java List 转 Go 切片
 }
 
 // Tracking 对应 Java 中 Tracking 静态内部类

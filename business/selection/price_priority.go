@@ -22,15 +22,10 @@ func (p *PricePriorityStrategy) Select(platformContent *model.AdPlatformContent)
 	if len(platformResponses) == 0 {
 		return
 	}
-
-	// 找出价格最高的响应
-	//maxPriceResp := platformResponses[0]
-	//for _, resp := range platformResponses {
-	//	if resp.Price > maxPriceResp.Price {
-	//		maxPriceResp = resp
-	//	}
-	//}
-	//platformContent.FinalAdInternalResponses = maxPriceResp
+	for _, response := range platformResponses {
+		platformContent.FinalAdInternalResponses = response
+		return
+	}
 }
 
 // GetStrategyName 获取策略名称

@@ -275,6 +275,130 @@ func adaptResponse(ir *model.AdInternalResponse) *AdResponse {
 		return ar
 	}
 	bids := make([]*SeatBid, len(ir.AdInfos))
+	for i, adInfo := range ir.AdInfos {
+		bid := &SeatBid{}
+		b := &Bid{}
+
+		b.BidType = 0
+		b.Price = float64(adInfo.Price)
+		b.Crid = adInfo.Creative.CreativeId
+		b.Nurl = adInfo.WinNotice
+		b.Lurl = adInfo.WinFailNotice
+
+		mm := &MaterialMeta{}
+
+		mm.Title = adInfo.Creative.Title
+		mm.Description = adInfo.Creative.Description
+		mm.Cta = adInfo.Creative.Cta
+		mm.Rating = strconv.FormatFloat(float64(adInfo.Creative.Rating), 'f', 2, 64)
+		if adInfo.Creative.Icon != nil {
+			icon := Image{}
+			icon.Url = adInfo.Creative.Icon.Url
+			icon.W = adInfo.Creative.Icon.Width
+			icon.H = adInfo.Creative.Icon.Height
+			icon.AspectRatio = float64(adInfo.Creative.Icon.Ratio)
+			mm.Icon = &icon
+		}
+
+		if adInfo.Creative.Images != nil && len(adInfo.Creative.Images) > 0 {
+			images := make([]*Image, len(adInfo.Creative.Images))
+			for ii, img := range adInfo.Creative.Images {
+				im := Image{}
+				im.Url = img.Url
+				im.W = img.Width
+				im.H = img.Height
+				im.AspectRatio = float64(img.Ratio)
+				if ii == 0 {
+					mm.Image = &im
+				}
+				images[ii] = &im
+			}
+			mm.Images = images
+		}
+		mm.ImageMode = adInfo.Creative.ImageMode
+		if adInfo.Creative.CreativeVideo != nil {
+
+			v := Video{}
+
+			v.Url = adInfo.Creative.CreativeVideo.Url
+			v.Duration = float32(adInfo.Creative.CreativeVideo.Duration)
+			v.Size = float32(adInfo.Creative.CreativeVideo.Size)
+			v.Resolution = adInfo.Creative.CreativeVideo.Resolution
+			v.Cover = adInfo.Creative.CreativeVideo.CoverUrl
+			v.Coverh = adInfo.Creative.CreativeVideo.CoverHeight
+			v.Coverw = adInfo.Creative.CreativeVideo.CoverWidth
+			v.Title = adInfo.Creative.CreativeVideo.Title
+			v.Desc = adInfo.Creative.CreativeVideo.Description
+			v.AfterHtml = adInfo.Creative.CreativeVideo.AfterHtml
+			v.ForceDuration = adInfo.Creative.CreativeVideo.MinDuration
+			v.CompleteCoverUrl = adInfo.Creative.CreativeVideo.EndCoverUrl
+			v.Skip = adInfo.Creative.CreativeVideo.Oriented
+			if adInfo.Creative.CreativeVideo.PrefetchEnable {
+				v.Preload = 1
+			} else {
+				v.Preload = 0
+			}
+			mm.Video = &v
+		}
+		mm.HtmlSnippet = adInfo.Creative.HtmlSnippet
+		if adInfo.MiniProgram != nil {
+			mp := MiniProgram{}
+			mp.ID = adInfo.MiniProgram.Id
+			mp.Path = adInfo.MiniProgram.Path
+			mp.Name = adInfo.MiniProgram.Name
+			mp.AppId = adInfo.MiniProgram.AppId
+			mm.MiniProgram = &mp
+		}
+
+		if adInfo.App != nil {
+			appData := AppData{}
+			appData.Name = adInfo.App.Name
+			appData.Bundle = adInfo.App.Bundle
+			appData.Ver = adInfo.App.Version
+			appData.Icon = adInfo.App.IconUrl
+			appData.Intro = adInfo.App.Introduction
+			appData.Size = float64(adInfo.App.Size)
+			appData.Privacy = adInfo.App.PrivacyPolicy
+			appData.PrivacyAgreement = adInfo.App.PrivacyPolicyLink
+			appData.Developer = adInfo.App.Developer
+			appData.PaymentType = adInfo.App.IconUrl
+			b.App = &appData
+		}
+		b.ClickAction = adInfo.ClickAction
+		b.Landing = adInfo.LandingPage
+		b.Source = adInfo.Source
+		b.SourceLogo = adInfo.SourceLogoUrl
+		b.Deeplink = adInfo.Deeplink
+
+		if adInfo.Creative.ImpUrls != nil && len(adInfo.Creative.ImpUrls) > 0 {
+			track := b.EventTrack
+			if track == nil {
+				track = &EventTrack{}
+			}
+			track.ImpTracks = adInfo.Creative.ImpUrls
+
+		}
+
+		if adInfo.Creative.ClickUrls != nil && len(adInfo.Creative.ClickUrls) > 0 {
+			track := b.EventTrack
+			if track == nil {
+				track = &EventTrack{}
+			}
+			track.ClkTracks = adInfo.Creative.ClickUrls
+
+		}
+
+		if adInfo.Creative.LocalTrackingEvent != nil {
+			track := b.EventTrack
+			track.ImpTracks = adInfo.Creative.ImpUrls
+			track.ImpTracks = append(track.ImpTracks)
+		}
+
+		b.Creative = mm
+		bid.Bid = b
+
+		bids[i] = bid
+	}
 	ar.SeatBid = bids
 	return ar
 

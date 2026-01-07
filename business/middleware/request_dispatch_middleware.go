@@ -14,6 +14,7 @@ func RequestLDispatchMiddleware() MediaHandlerFunc {
 		platformHandleMiddleware.Use(DispatchTrafficMiddleware())
 		platformHandleMiddleware.Use(DispatchAdSelectMiddleware())
 		platformHandleMiddleware.Do(platformContent)
+		mediaContent.AdInternalResponse = platformContent.FinalAdInternalResponses
 
 		return true
 	}
