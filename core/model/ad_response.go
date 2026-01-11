@@ -24,8 +24,8 @@ type AdInfo struct {
 	AdvertiserId  string           // 广告主ID
 	App           *AppInfo         // APP信息（若广告是APP下载类型）
 	MiniProgram   *MiniProgram     // 小程序信息（若广告是小程序类型）
-	ThirdTracings []*ThirdTracking // 监测地址
-	Creative      *Creative        // 创意对象列表
+	EventTracking []*EventTracking // 监测地址
+	Creative      *Material        // 创意对象列表
 }
 
 // AppInfo 下载的应用信息
@@ -61,7 +61,7 @@ type AppInfo struct {
 	Icp               string   // ICP备案信息
 }
 
-// MiniProgram 小程序信息（对应 MiniProgram.java）
+// MiniProgram 小程序信息
 type MiniProgram struct {
 	Id    string // 小程序原始id
 	Path  string // 小程序跳转路径
@@ -69,29 +69,29 @@ type MiniProgram struct {
 	AppId string // 开放平台id
 }
 
-// ThirdTracking 第三方广告监测实体（对应 ThirdTracking.java）
-type ThirdTracking struct {
+// EventTracking 广告监测实体
+type EventTracking struct {
 	Type int
 	Urls []string
 }
 
-// Creative 广告创意类（对应 Creative.java）
-type Creative struct {
-	Title              string           // 创意标题
-	Description        string           // 创意描述
-	Cta                string           // 广告按钮文字
-	Rating             float32          // 评分等级
-	Icon               *Image           // 广告创意Icon
-	Images             []*Image         // 广告创意图片
-	ImageMode          int              // 素材模式：小图=2 大图=3 组图=4 横屏视频=5 竖屏视频=6
-	CreativeVideo      *CreativeVideo   // 视频类型创意
-	CreativeId         string           // 创意ID
-	HtmlSnippet        string           // Html类型的创意代码
-	Index              int              // 创意在广告请求中的唯一序号
-	LocalTrackingEvent []*TrackingEvent // 自身平台的监测（已废弃）
-	ImpUrls            []string         // 上游平台返回的曝光监测地址列表
-	ClickUrls          []string         // 上游平台返回的点击监测地址列表
-	ThirdTrackingUrls  []*ThirdTracking // 其他事件监测
+// Material 广告素材
+type Material struct {
+	Title         string   // 创意标题
+	Description   string   // 创意描述
+	Cta           string   // 广告按钮文字
+	Rating        float32  // 评分等级
+	Icon          *Image   // 广告创意Icon
+	Images        []*Image // 广告创意图片
+	ImageMode     int      // 素材模式：小图=2 大图=3 组图=4 横屏视频=5 竖屏视频=6
+	CreativeVideo *Video   // 视频类型创意
+	CreativeId    string   // 创意ID
+	HtmlSnippet   string   // Html类型的创意代码
+	Index         int      // 创意在广告请求中的唯一序号
+
+	ImpUrls           []string         // 上游平台返回的曝光监测地址列表
+	ClickUrls         []string         // 上游平台返回的点击监测地址列表
+	ThirdTrackingUrls []*EventTracking // 其他事件监测
 }
 
 // Image 图片信息（对应 Image.java）
@@ -104,8 +104,8 @@ type Image struct {
 	Mimes  []string // 支持的图片内容类型：image/jpg、image/jpeg、image/gif、image/png
 }
 
-// CreativeVideo 视频类型创意（对应 CreativeVideo.java）
-type CreativeVideo struct {
+// Video 视频类型创意
+type Video struct {
 	Oriented           int              // 视频方向：1-竖屏 2-横屏
 	Title              string           // 视频播放完成后显示的广告标题
 	Description        string           // 视频播放完成后显示的广告描述
@@ -134,14 +134,12 @@ type CreativeVideo struct {
 	Icon               string           // 激励视频特有字段
 }
 
-// PointTrack 视频按秒上报事件（CreativeVideo 内部类）
+// PointTrack 视频按秒上报事件（Video 内部类）
 type PointTrack struct {
 	Ts   int      // 视频播放到ts秒时上报
 	Urls []string // 上报地址列表
 }
 
-type TrackingEvent struct {
-}                   // 自身平台监测事件（对应 TrackingEvent.java）
 type Event struct { // 创意交互事件（对应 Event.java）
 	Type  int    // 交互类型（映射 Interaction 枚举，Go 中用 int 替代）
 	Value string // 广告点击互动内容

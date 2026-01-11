@@ -14,6 +14,6 @@ type MediaAdapter interface {
 	// MarshalResponse 将内部统一响应模型转换为媒体对应的响应格式（返回字节流）
 	MarshalResponse(internalResp *model.AdInternalResponse) ([]byte, error)
 
-	// GetMediaType 获取适配器对应的媒体类型
-	GetMediaType() string
+	// GetMediaName 获取适配器对应的媒体名称
+	GetMediaName() string
 }

@@ -130,17 +130,17 @@ func adaptResponse(bidResp *AdResponse) *model.AdInternalResponse {
 			adInfo.MiniProgram = &mp
 		}
 		if b.Trackings != nil && len(b.Trackings) > 0 {
-			ts := make([]*model.ThirdTracking, len(b.Trackings))
+			ts := make([]*model.EventTracking, len(b.Trackings))
 			for i, t := range b.Trackings {
-				ts[i] = &model.ThirdTracking{
+				ts[i] = &model.EventTracking{
 					Type: t.EventType,
 					Urls: t.Urls,
 				}
 			}
-			adInfo.ThirdTracings = ts
+			adInfo.EventTracking = ts
 		}
 
-		creative := &model.Creative{}
+		creative := &model.Material{}
 		creative.Title = b.Creative.Title
 		creative.Description = b.Creative.Description
 		creative.Cta = b.Creative.Cta
@@ -170,7 +170,7 @@ func adaptResponse(bidResp *AdResponse) *model.AdInternalResponse {
 			creative.Images = images
 		}
 		if b.Creative.Video != nil {
-			creativeVideo := model.CreativeVideo{}
+			creativeVideo := model.Video{}
 			creativeVideo.Oriented = b.Creative.Video.Type
 			creativeVideo.Title = b.Creative.Video.Title
 			creativeVideo.Description = b.Creative.Video.Desc

@@ -35,6 +35,6 @@ func (m *Adapter) MarshalResponse(internalResp *model.AdInternalResponse) ([]byt
 }
 
 // GetMediaType 获取媒体类型
-func (m *Adapter) GetMediaType() string {
+func (m *Adapter) GetMediaName() string {
 	return m.mediaType
 }
