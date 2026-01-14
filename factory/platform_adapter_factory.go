@@ -1,9 +1,9 @@
 package factory
 
 import (
-	"ad-exchange-server/adapter/platform"
-	"ad-exchange-server/adapter/platform/titanvol"
 	_interface "ad-exchange-server/core/interface"
+	"ad-exchange-server/protocol/platform"
+	"ad-exchange-server/protocol/platform/titanvol"
 )
 
 var platformAdapterMap = map[string]_interface.PlatformAdapter{

@@ -1,9 +1,9 @@
 package media
 
 import (
-	"ad-exchange-server/adapter/media/adlink"
-	"ad-exchange-server/adapter/media/hongyu"
 	_interface "ad-exchange-server/core/interface"
+	"ad-exchange-server/protocol/media/adlink"
+	"ad-exchange-server/protocol/media/hongyu"
 )
 
 // 确保后续实现满足接口约束

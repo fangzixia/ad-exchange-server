@@ -1,8 +1,8 @@
 package platform
 
 import (
-	"ad-exchange-server/adapter/platform/titanvol"
 	_interface "ad-exchange-server/core/interface"
+	"ad-exchange-server/protocol/platform/titanvol"
 )
 
 // 确保后续实现满足接口约束

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"ad-exchange-server/business/middleware"
-	"ad-exchange-server/infra/logger"
 	"fmt"
 	"github.com/gorilla/mux"
 	"log"
@@ -16,7 +15,6 @@ import (
 // AdRequestHandler 广告请求处理器
 func AdRequestHandler(w http.ResponseWriter, r *http.Request) {
 	defer func() {
-		logger.Logger.Info("AdRequestHandler start")
 	}()
 
 	// 1. 获取媒体类型和渠道号
@@ -65,5 +63,4 @@ func AdRequestHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(respBytes)
-	logger.Logger.Info("AdRequestHandler end")
 }

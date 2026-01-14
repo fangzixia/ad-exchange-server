@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ad-exchange-server/bootstrap"
+	"ad-exchange-server/ioc"
 	"log"
 	"net/http"
 	"strconv"
@@ -12,7 +12,7 @@ import (
 
 func main() {
 	// 1. 初始化基础设施
-	bootstrap.Init()
+	ioc.Init()
 
 	// 2. 初始化路由
 	router := api.InitRouter()

@@ -1,9 +1,9 @@
 package factory
 
 import (
-	"ad-exchange-server/adapter/media/adlink"
-	"ad-exchange-server/adapter/media/hongyu"
 	_interface "ad-exchange-server/core/interface"
+	"ad-exchange-server/protocol/media/adlink"
+	"ad-exchange-server/protocol/media/hongyu"
 )
 
 var mediaAdapterMap = map[string]_interface.MediaAdapter{
