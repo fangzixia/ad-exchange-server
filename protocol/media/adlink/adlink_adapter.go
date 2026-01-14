@@ -37,7 +37,7 @@ func (m *Adapter) MarshalResponse(internalResp *model.AdInternalResponse) ([]byt
 	return json.Marshal(mediaAResp)
 }
 
-// GetMediaType 获取媒体类型
+// GetMediaName 获取媒体类型
 func (m *Adapter) GetMediaName() string {
 	return m.mediaType
 }
@@ -269,7 +269,7 @@ func createDevice(r *AdRequest) *model.Device {
 
 func adaptResponse(ir *model.AdInternalResponse) *AdResponse {
 	ar := &AdResponse{}
-	if ir.AdInfos == nil || len(ir.AdInfos) == 0 {
+	if ir == nil || ir.AdInfos == nil || len(ir.AdInfos) == 0 {
 		ar.Code = 0
 		ar.Message = "广告内容为空"
 		return ar
